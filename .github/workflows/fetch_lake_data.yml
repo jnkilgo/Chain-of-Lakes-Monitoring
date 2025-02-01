@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures we get all history
 
       - name: Set Up Python
         uses: actions/setup-python@v4
@@ -31,13 +33,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit and Push Changes
+      - name: Pull Latest Changes and Push Updates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch --all
-          git reset --soft origin/main  # Ensure the local branch is up to date
+          git fetch origin main
+          git reset --soft origin/main  # Ensure local matches remote
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git pull --rebase  # Pull the latest remote changes before pushing
+          git pull --rebase origin main  # Ensure we are up-to-date
           git push origin main
