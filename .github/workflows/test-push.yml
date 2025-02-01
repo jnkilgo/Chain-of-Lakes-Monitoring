@@ -1,0 +1,25 @@
+name: Test Push
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Commit and Push
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git add .
+          git commit -m "Test commit" --allow-empty
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
