@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # We will provide our own authentication token
-          fetch-depth: 0  # Ensures full history is available
+          persist-credentials: false  # We'll use our own token
+          fetch-depth: 0  # Ensures full history is available for conflict resolution
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -29,9 +29,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git fetch origin main
-          git reset --hard origin/main  # Ensures working directory matches the latest remote version
-          git clean -fd  # Removes any untracked files to prevent merge issues
-          git pull origin main --rebase  # Ensures we are working on the latest version
+          git pull origin main --rebase  # Ensures the latest changes are applied first
 
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
@@ -40,6 +38,7 @@ jobs:
         run: |
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main --force
+          git pull --rebase origin main  # Make sure our changes integrate with any new changes
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
