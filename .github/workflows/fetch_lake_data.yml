@@ -31,13 +31,28 @@ jobs:
           git fetch origin main
           git reset --hard origin/main  # Ensures we have the latest repository state
 
+      - name: Ensure Data Directory Exists
+        run: mkdir -p data  # Creates 'data/' if it doesn't exist
+
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
 
-      - name: Commit and Push Changes
+      - name: Verify CSV Files Exist
+        id: check_files
         run: |
-          git add data/*.csv  # Track only CSV files inside the correct data folder
-          git commit -m "🔄 Updated lake data (Auto)" || echo "No changes to commit"
+          if [ -n "$(ls -A data/*.csv 2>/dev/null)" ]; then
+            echo "CSV files found."
+            echo "files_exist=true" >> $GITHUB_ENV
+          else
+            echo "No CSV files found. Skipping commit."
+            echo "files_exist=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and Push Changes
+        if: env.files_exist == 'true'  # Run only if CSV files exist
+        run: |
+          git add data/*.csv
+          git commit -m "🔄 Updated lake data (Auto)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
