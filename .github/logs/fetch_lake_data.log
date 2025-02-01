@@ -76,3 +76,34 @@
 2025-02-01 21:53:14,798 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/beaver.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
 2025-02-01 21:53:14,798 - WARNING - ⚠️ No data fetched for beaver_lake.
 2025-02-01 21:53:14,798 - INFO - 🎯 Data fetch process completed.
+2025-02-01 21:57:49,438 - INFO - 🚀 Starting lake data fetch script.
+2025-02-01 21:57:49,438 - INFO - 🚀 Fetching data for all sources.
+2025-02-01 21:57:49,438 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm...
+2025-02-01 21:57:49,439 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:49,572 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/fayettev.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:49,572 - WARNING - ⚠️ No data fetched for white_river
+2025-02-01 21:57:49,572 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm...
+2025-02-01 21:57:49,573 - DEBUG - Starting new HTTPS connection (2): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:49,706 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/hindsvil.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:49,706 - WARNING - ⚠️ No data fetched for war_eagle
+2025-02-01 21:57:49,706 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm...
+2025-02-01 21:57:49,707 - DEBUG - Starting new HTTPS connection (3): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:50,170 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/beaver.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:50,170 - WARNING - ⚠️ No data fetched for beaver_lake
+2025-02-01 21:57:50,170 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm...
+2025-02-01 21:57:50,172 - DEBUG - Starting new HTTPS connection (4): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:50,647 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/berryvil.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:50,647 - WARNING - ⚠️ No data fetched for kings_river
+2025-02-01 21:57:50,647 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm...
+2025-02-01 21:57:50,648 - DEBUG - Starting new HTTPS connection (5): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:50,759 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:50,759 - WARNING - ⚠️ No data fetched for james_river
+2025-02-01 21:57:50,759 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm...
+2025-02-01 21:57:50,760 - DEBUG - Starting new HTTPS connection (6): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:50,809 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/tabrock.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:50,809 - WARNING - ⚠️ No data fetched for table_rock
+2025-02-01 21:57:50,810 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/bulsdam.htm...
+2025-02-01 21:57:50,810 - DEBUG - Starting new HTTPS connection (7): www.swl-wc.usace.army.mil:443
+2025-02-01 21:57:50,860 - ERROR - ❌ Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/bulsdam.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/bulsdam.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)')))
+2025-02-01 21:57:50,860 - WARNING - ⚠️ No data fetched for bull_shoals
+2025-02-01 21:57:50,860 - INFO - ✅ Data fetch completed.
