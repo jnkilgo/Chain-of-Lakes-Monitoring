@@ -39,6 +39,6 @@ jobs:
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
           git pull --rebase origin main  # Make sure our changes integrate with any new changes
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main || echo "Push failed, likely due to no changes"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
