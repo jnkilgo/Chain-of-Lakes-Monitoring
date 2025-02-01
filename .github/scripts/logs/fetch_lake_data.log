@@ -1,0 +1,19 @@
+2025-02-01 23:06:00,142 - INFO - 🚀 Starting lake data fetch script.
+2025-02-01 23:06:00,144 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:00,321 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/beaver.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:00,321 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/lake_data.csv.
+2025-02-01 23:06:00,322 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:00,497 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/fayettev.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:00,498 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/white_river_data.csv.
+2025-02-01 23:06:00,499 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:00,680 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/hindsvil.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:00,681 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/war_eagle_data.csv.
+2025-02-01 23:06:00,682 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:00,833 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/tabrock.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:00,834 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/table_rock_data.csv.
+2025-02-01 23:06:00,835 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:01,013 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/berryvil.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:01,013 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/kings_river_data.csv.
+2025-02-01 23:06:01,014 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-01 23:06:01,195 - ERROR - Error fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-01 23:06:01,195 - INFO - 0 rows written to /home/runner/work/Chain-of-Lakes-Monitoring/Chain-of-Lakes-Monitoring/.github/scripts/data/james_river_data.csv.
