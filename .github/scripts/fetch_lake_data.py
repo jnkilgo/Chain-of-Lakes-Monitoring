@@ -2,15 +2,16 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import csv
+import time
 from datetime import datetime, timedelta
 import logging
 
 # Define paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
-LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory
-DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Store CSV files outside scripts directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE_DIR, "..", "logs")
+DATA_DIR = os.path.join(BASE_DIR, "..", "data")
 
-# Ensure all required directories exist
+# Ensure directories exist
 for directory in [LOG_DIR, DATA_DIR]:
     os.makedirs(directory, exist_ok=True)
 
@@ -47,6 +48,14 @@ HEADERS = {
     "james_river": ["Date", "Time", "Stage", "Flow"],
 }
 
+# Spoofed headers
+HEADERS_REQUEST = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.swl-wc.usace.army.mil/",
+    "Connection": "keep-alive",
+}
+
 # Normalize timestamps, correcting "2400" to "0000"
 def normalize_timestamp(raw_date, raw_time):
     if raw_time == "2400":
@@ -67,32 +76,42 @@ def is_valid_row(row):
         return False
     return True
 
-# Fetch and parse data from the website with SSL verification disabled
+# Fetch and parse data from the website
 def fetch_data(url, key):
     """
-    Fetches data from the specified URL **without SSL verification**.
+    Fetches data from the URL using spoofed headers and retries.
     """
-    try:
-        logging.info(f"🌍 Fetching data from {url} with SSL verification disabled...")
+    attempt = 0
+    while attempt < 5:
+        try:
+            logging.info(f"🌍 Fetching data from {url} (Attempt {attempt + 1})")
+            
+            # 🔹 Spoof request headers
+            response = requests.get(url, headers=HEADERS_REQUEST, timeout=15, verify=False)
 
-        # 🔹 Make request without SSL verification
-        response = requests.get(url, timeout=15, verify=False)
+            response.raise_for_status()
 
-        response.raise_for_status()
+            # Log first 500 characters for debugging
+            raw_text = response.text[:500]
+            logging.debug(f"📝 First 500 chars of response ({key}):\n{raw_text}")
 
-        raw_text = response.text[:500]  # Log first 500 characters
-        logging.debug(f"📝 First 500 chars of response ({key}):\n{raw_text}")
+            # Ensure response contains expected data
+            if "JAN" not in raw_text and "FEB" not in raw_text:
+                logging.warning(f"⚠️ Unexpected response content from {url}. Retrying...")
+                attempt += 1
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
 
-        if "JAN" not in raw_text and "FEB" not in raw_text:
-            logging.error(f"⚠️ Unexpected content from {url}. Skipping parsing.")
-            return []
+            soup = BeautifulSoup(response.text, "html.parser")
+            return soup.find("pre").text.strip().splitlines()
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        return soup.find("pre").text.strip().splitlines()
+        except requests.exceptions.RequestException as e:
+            logging.error(f"❌ Error fetching {url}: {e}. Retrying...")
+            attempt += 1
+            time.sleep(2 ** attempt)
 
-    except requests.exceptions.RequestException as e:
-        logging.error(f"❌ Error fetching data from {url}: {e}")
-        return []
+    logging.error(f"⛔ Failed to fetch data from {url} after {attempt} attempts.")
+    return []
 
 # Sort rows chronologically
 def sort_rows(data):
