@@ -7,9 +7,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Define paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Save logs in .github/logs/
-DATA_DIR = os.path.join(BASE_DIR, "..", "..", "data")  # Ensure CSVs are in root-level "data/"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go up one level to the repository root
+LOG_DIR = os.path.join(BASE_DIR, ".github", "logs")
+DATA_DIR = os.path.join(BASE_DIR, ".github", "data")
 
 # Ensure directories exist
 for directory in [LOG_DIR, DATA_DIR]:
@@ -35,9 +35,14 @@ URLS = {
     "james_river_data": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm",
 }
 
-# CSV file paths (Ensuring storage in `data/` at repository root)
+# CSV file paths
 CSV_FILES = {
-    key: os.path.join(DATA_DIR, f"{key}.csv") for key in URLS.keys()
+    "lake_data": os.path.join(DATA_DIR, "lake_data.csv"),
+    "white_river_data": os.path.join(DATA_DIR, "white_river_data.csv"),
+    "war_eagle_data": os.path.join(DATA_DIR, "war_eagle_data.csv"),
+    "table_rock_data": os.path.join(DATA_DIR, "table_rock_data.csv"),
+    "kings_river_data": os.path.join(DATA_DIR, "kings_river_data.csv"),
+    "james_river_data": os.path.join(DATA_DIR, "james_river_data.csv"),
 }
 
 # Correct headers for each CSV file
@@ -146,13 +151,9 @@ def write_to_csv(file_path, data, headers):
 def main():
     for key, url in URLS.items():
         data = fetch_data(url)
-        if data:
-            file_path = CSV_FILES[key]
-            headers = HEADERS.get(key, ["Date", "Time", "Data"])
-            write_to_csv(file_path, data, headers)
-        else:
-            logging.warning(f"⚠️ No data fetched for {key}")
+        file_path = CSV_FILES[key]
+        headers = HEADERS[key]
+        write_to_csv(file_path, data, headers)
 
 if __name__ == "__main__":
     main()
-    logging.info("✅ Data fetch completed.")
