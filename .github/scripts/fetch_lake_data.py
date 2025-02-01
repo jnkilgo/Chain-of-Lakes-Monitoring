@@ -7,9 +7,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Define paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go up one level to the repository root
-LOG_DIR = os.path.join(BASE_DIR, ".github", "logs")
-DATA_DIR = os.path.join(BASE_DIR, ".github", "data")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+DATA_DIR = os.path.join(BASE_DIR, "data")
 
 # Ensure directories exist
 for directory in [LOG_DIR, DATA_DIR]:
