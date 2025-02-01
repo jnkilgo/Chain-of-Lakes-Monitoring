@@ -7,21 +7,24 @@ import logging
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
-LOG_DIR = os.path.join(BASE_DIR, "logs")  # Log directory
+LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory moved one level up
 DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Store CSV files outside scripts directory
 
 # Ensure all required directories exist before proceeding
 for directory in [LOG_DIR, DATA_DIR]:
     if not os.path.exists(directory):
         os.makedirs(directory)
+        print(f"✅ Created directory: {directory}")  # Debugging output
 
 # Logging setup
 LOG_FILE = os.path.join(LOG_DIR, "fetch_lake_data.log")
+print(f"📂 Log file path: {LOG_FILE}")  # Debugging output
+
 logging.basicConfig(
     filename=LOG_FILE, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-logging.info("Starting data fetch script.")
+logging.info("🚀 Starting data fetch script.")
 
 # URLs for data
 URLS = {
@@ -93,15 +96,15 @@ def fetch_data(url):
                     other_columns = columns[2:]
                     full_row = [raw_date, raw_time] + other_columns
                     if not is_valid_row(full_row):
-                        logging.warning(f"Skipped invalid row: {full_row}")
+                        logging.warning(f"⚠️ Skipped invalid row: {full_row}")
                         continue
                     parsed_data.append(full_row)
                 except (IndexError, ValueError) as e:
-                    logging.warning(f"Skipped malformed row: {row} - Error: {e}")
+                    logging.warning(f"⚠️ Skipped malformed row: {row} - Error: {e}")
                     continue
         return parsed_data
     except Exception as e:
-        logging.error(f"Error fetching data from {url}: {e}")
+        logging.error(f"❌ Error fetching data from {url}: {e}")
         return []
 
 # Sort rows chronologically
@@ -109,7 +112,7 @@ def sort_rows(data):
     try:
         return sorted(data, key=lambda x: datetime.strptime(f"{x[0]} {x[1]}", "%d%b%Y %H%M"))
     except Exception as e:
-        logging.error(f"Error sorting rows: {e}")
+        logging.error(f"❌ Error sorting rows: {e}")
         return data
 
 # Remove duplicates and limit to 5 days
@@ -134,13 +137,13 @@ def write_to_csv(file_path, data, headers):
             writer.writerow(headers)
             writer.writerows(cleaned_data)
 
-        logging.info(f"{len(cleaned_data)} rows written to {file_path}.")
+        logging.info(f"✅ {len(cleaned_data)} rows written to {file_path}.")
     except Exception as e:
-        logging.error(f"Error writing to {file_path}: {e}")
+        logging.error(f"❌ Error writing to {file_path}: {e}")
 
 # Main script function
 def main():
-    logging.info("Fetching data for all sources.")
+    logging.info("🚀 Fetching data for all sources.")
     for key, url in URLS.items():
         data = fetch_data(url)
         if data:
@@ -148,8 +151,8 @@ def main():
             headers = HEADERS.get(key, ["Date", "Time", "Data"])
             write_to_csv(file_path, data, headers)
         else:
-            logging.warning(f"No data fetched for {key}")
+            logging.warning(f"⚠️ No data fetched for {key}")
 
 if __name__ == "__main__":
     main()
-    logging.info("Data fetch completed.")
+    logging.info("🎉 Data fetch completed successfully.")
