@@ -27,4 +27,5 @@ jobs:
 
       - name: Push Changes
         run: |
-          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git
+          git push origin main
