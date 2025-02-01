@@ -1,59 +1,53 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import csv
-import os
-import logging
 from datetime import datetime, timedelta
-import time
+import logging
 
-# Set log file path in a writable directory for GitHub Actions
-LOG_FILE = "/tmp/fetch_lake_data.log"
-os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+# Define paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
+LOG_DIR = os.path.join(BASE_DIR, "logs")  # Log directory
+DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Store CSV files outside scripts directory
 
-# Configure logging
-logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+# Ensure all required directories exist
+for directory in [LOG_DIR, DATA_DIR]:
+    os.makedirs(directory, exist_ok=True)
+
+# Logging setup
+LOG_FILE = os.path.join(LOG_DIR, "fetch_lake_data.log")
+logging.basicConfig(
+    filename=LOG_FILE, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logging.info("Starting data fetch script.")
 
 # URLs for data
 URLS = {
-    "beaver_lake": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm",
     "white_river": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm",
     "war_eagle": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm",
+    "beaver_lake": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm",
     "kings_river": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm",
     "james_river": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm",
     "table_rock": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm",
     "bull_shoals": "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/bulsdam.htm",
-    "dam_data": "https://www.swl-wc.usace.army.mil/WM_Reports/current_conditions.html"
 }
 
-# CSV file paths (in the repo for GitHub Actions)
-CSV_DIR = "./data/"
-CSV_FILES = {
-    "beaver_lake": CSV_DIR + "beaver_lake.csv",
-    "white_river": CSV_DIR + "white_river.csv",
-    "war_eagle": CSV_DIR + "war_eagle.csv",
-    "kings_river": CSV_DIR + "kings_river.csv",
-    "james_river": CSV_DIR + "james_river.csv",
-    "table_rock": CSV_DIR + "table_rock.csv",
-    "bull_shoals": CSV_DIR + "bull_shoals.csv",
-    "dam_data": CSV_DIR + "dam_data.csv"
-}
+# CSV file paths
+CSV_FILES = {key: os.path.join(DATA_DIR, f"{key}_data.csv") for key in URLS.keys()}
 
-# Ensure CSV directory exists
-os.makedirs(CSV_DIR, exist_ok=True)
-
-# Headers for each CSV file
+# Correct headers for each CSV file
 HEADERS = {
-    "beaver_lake": ["Date", "Time CST/CDT", "Elevation (ft)", "Tailwater (ft)", "Generation (mwh)", "Turbine Release (cfs)", "Spillway Release (cfs)", "Total Release (cfs)"],
-    "white_river": ["Date", "Time CST/CDT", "Stage (feet)", "Flow (cfs)"],
-    "war_eagle": ["Date", "Time CST/CDT", "Stage (feet)", "Flow (cfs)"],
-    "kings_river": ["Date", "Time CST/CDT", "Stage (feet)", "Flow (cfs)"],
-    "james_river": ["Date", "Time CST/CDT", "Stage (feet)", "Flow (cfs)"],
-    "table_rock": ["Date", "Time CST/CDT", "Elevation (ft)", "Tailwater (ft)", "Generation (mwh)", "Turbine Release (cfs)", "Spillway Release (cfs)", "Total Release (cfs)"],
-    "bull_shoals": ["Date", "Time CST/CDT", "Elevation (ft)", "Tailwater (ft)", "Generation (mwh)", "Turbine Release (cfs)", "Spillway Release (cfs)", "Total Release (cfs)"],
-    "dam_data": ["Dam", "Pool Elevation", "1hr Change", "24hr Change", "Total Outflow", "Top of Cons Pool", "Top of Flood Pool", "Percent Storage", "Feet from Cons Full"]
+    "beaver_lake": ["Date", "Time", "Elevation", "Tailwater", "Generation", "Turbine Release", "Spillway Release", "Total Release"],
+    "table_rock": ["Date", "Time", "Elevation", "Tailwater", "Generation", "Turbine Release", "Spillway Release", "Total Release"],
+    "bull_shoals": ["Date", "Time", "Elevation", "Tailwater", "Generation", "Turbine Release", "Spillway Release", "Total Release"],
+    "white_river": ["Date", "Time", "Stage", "Flow"],
+    "war_eagle": ["Date", "Time", "Stage", "Flow"],
+    "kings_river": ["Date", "Time", "Stage", "Flow"],
+    "james_river": ["Date", "Time", "Stage", "Flow"],
 }
 
-# Normalize timestamps (handles "2400" as "0000" on the next day)
+# Normalize timestamps, correcting "2400" to "0000"
 def normalize_timestamp(raw_date, raw_time):
     if raw_time == "2400":
         raw_time = "0000"
@@ -63,7 +57,7 @@ def normalize_timestamp(raw_date, raw_time):
 
 # Validate if a row is valid
 def is_valid_row(row):
-    if len(row) < 3:
+    if len(row) < 4:
         return False
     if any(value.strip() in ["---", "----", "--", "-"] for value in row):
         return False
@@ -73,41 +67,41 @@ def is_valid_row(row):
         return False
     return True
 
-# Fetch and parse data from the website with retry logic
-def fetch_data(url, retries=3, delay=5):
-    for attempt in range(retries):
-        try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, "html.parser")
-            rows = soup.find_all("pre")[0].text.strip().splitlines()
-            parsed_data = []
-            start_parsing = False
+# Fetch and parse data from the website
+def fetch_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        rows = soup.find_all("pre")[0].text.strip().splitlines()
+        parsed_data = []
+        start_parsing = False
 
-            for row in rows:
-                row = row.strip()
-                if not start_parsing and any(char.isdigit() for char in row) and "JAN" in row:
-                    start_parsing = True
-                if start_parsing:
-                    columns = row.split()
-                    if "7-Day" in row or "Plot" in row:
-                        break
-                    try:
-                        raw_date, raw_time = normalize_timestamp(columns[0], columns[1])
-                        other_columns = columns[2:]
-                        full_row = [raw_date, raw_time] + other_columns
-                        if not is_valid_row(full_row):
-                            logging.warning(f"Skipped invalid or malformed row: {full_row}")
-                            continue
-                        parsed_data.append(full_row)
-                    except (IndexError, ValueError):
-                        logging.warning(f"Skipped malformed row: {row}")
+        for row in rows:
+            row = row.strip()
+            if not start_parsing and any(char.isdigit() for char in row) and "JAN" in row:
+                start_parsing = True
+
+            if start_parsing:
+                columns = row.split()
+                if "7-Day" in row or "Plot" in row:
+                    break
+
+                try:
+                    raw_date, raw_time = normalize_timestamp(columns[0], columns[1])
+                    other_columns = columns[2:]
+                    full_row = [raw_date, raw_time] + other_columns
+                    if not is_valid_row(full_row):
+                        logging.warning(f"Skipped invalid row: {full_row}")
                         continue
-            return parsed_data
-        except requests.RequestException as e:
-            logging.error(f"Attempt {attempt+1}: Error fetching data from {url}: {e}")
-            time.sleep(delay)
-    return []
+                    parsed_data.append(full_row)
+                except (IndexError, ValueError) as e:
+                    logging.warning(f"Skipped malformed row: {row} - Error: {e}")
+                    continue
+        return parsed_data
+    except Exception as e:
+        logging.error(f"Error fetching data from {url}: {e}")
+        return []
 
 # Sort rows chronologically
 def sort_rows(data):
@@ -117,7 +111,7 @@ def sort_rows(data):
         logging.error(f"Error sorting rows: {e}")
         return data
 
-# Remove duplicates and limit to last 5 days
+# Remove duplicates and limit to 5 days
 def clean_and_limit_data(data, cutoff_date):
     unique_data = {}
     for row in data:
@@ -143,12 +137,18 @@ def write_to_csv(file_path, data, headers):
     except Exception as e:
         logging.error(f"Error writing to {file_path}: {e}")
 
-# Main function
+# Main script function
 def main():
+    logging.info("Fetching data for all sources.")
     for key, url in URLS.items():
         data = fetch_data(url)
         if data:
-            write_to_csv(CSV_FILES[key], data, HEADERS[key])
+            file_path = CSV_FILES[key]
+            headers = HEADERS.get(key, ["Date", "Time", "Data"])
+            write_to_csv(file_path, data, headers)
+        else:
+            logging.warning(f"No data fetched for {key}")
 
 if __name__ == "__main__":
     main()
+    logging.info("Data fetch completed.")
