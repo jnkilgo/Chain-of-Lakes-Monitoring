@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # We'll use our own token
-          fetch-depth: 0  # Ensures full history is available for conflict resolution
+          persist-credentials: false  # Use GITHUB_TOKEN for authentication
+          fetch-depth: 0  # Ensures full history is available
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -38,6 +38,5 @@ jobs:
         run: |
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git push --force https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git
+          git push origin main
