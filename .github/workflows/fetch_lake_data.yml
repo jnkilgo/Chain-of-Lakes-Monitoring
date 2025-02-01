@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # We will use a personal access token instead
-          fetch-depth: 0  # Ensures we fetch all history for rebasing
+          persist-credentials: false  # Using personal access token instead
+          fetch-depth: 0  # Fetch full history to avoid issues
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -24,21 +24,20 @@ jobs:
       - name: Install Dependencies
         run: pip install requests beautifulsoup4
 
-      - name: Fetch latest changes
-        run: git fetch --all
-
-      - name: Pull latest changes
-        run: git pull --rebase
+      - name: Force Sync Repository with Remote
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git fetch origin main
+          git reset --hard origin/main  # Resets local branch to match remote exactly
 
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main --force
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
