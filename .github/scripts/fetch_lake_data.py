@@ -7,12 +7,13 @@ import logging
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
-LOG_DIR = os.path.join(BASE_DIR, "logs")  # Log directory
-DATA_DIR = os.path.join(BASE_DIR, "..", "..", "Data")  # Store CSV files in the `Data` directory
+LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory in the parent folder
+DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Data directory in the parent folder
 
-# Ensure all required directories exist
+# Ensure all required directories exist before proceeding
 for directory in [LOG_DIR, DATA_DIR]:
-    os.makedirs(directory, exist_ok=True)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 # Logging setup
 LOG_FILE = os.path.join(LOG_DIR, "fetch_lake_data.log")
