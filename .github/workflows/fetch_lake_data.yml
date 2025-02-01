@@ -38,7 +38,16 @@ jobs:
         run: |
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git pull --rebase origin main  # Make sure our changes integrate with any new changes
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main || echo "Push failed, likely due to no changes"
+          # Retry pulling and pushing to handle race conditions
+          for i in {1..3}; do
+            git pull --rebase origin main
+            if git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main; then
+              echo "Push succeeded"
+              break
+            else
+              echo "Push failed, retrying ($i/3)..."
+              sleep 5
+            fi
+          done
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
