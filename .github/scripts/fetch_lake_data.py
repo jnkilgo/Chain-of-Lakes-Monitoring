@@ -7,24 +7,26 @@ import logging
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
-LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory moved one level up
-DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Store CSV files outside scripts directory
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))  # Root directory one level up
+LOG_DIR = os.path.join(ROOT_DIR, "logs")  # Log directory moved up one level
+DATA_DIR = os.path.join(ROOT_DIR, "data")  # Store CSV files outside scripts directory
 
 # Ensure all required directories exist before proceeding
 for directory in [LOG_DIR, DATA_DIR]:
     if not os.path.exists(directory):
         os.makedirs(directory)
-        print(f"✅ Created directory: {directory}")  # Debugging output
 
-# Logging setup
+# Logging setup (Ensures LOG_DIR exists before writing)
 LOG_FILE = os.path.join(LOG_DIR, "fetch_lake_data.log")
-print(f"📂 Log file path: {LOG_FILE}")  # Debugging output
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)  # Explicitly create it before logging starts
 
 logging.basicConfig(
     filename=LOG_FILE, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-logging.info("🚀 Starting data fetch script.")
+logging.info("✅ Starting data fetch script.")
 
 # URLs for data
 URLS = {
@@ -143,7 +145,7 @@ def write_to_csv(file_path, data, headers):
 
 # Main script function
 def main():
-    logging.info("🚀 Fetching data for all sources.")
+    logging.info("📡 Fetching data for all sources.")
     for key, url in URLS.items():
         data = fetch_data(url)
         if data:
@@ -155,4 +157,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    logging.info("🎉 Data fetch completed successfully.")
+    logging.info("✅ Data fetch completed successfully.")
