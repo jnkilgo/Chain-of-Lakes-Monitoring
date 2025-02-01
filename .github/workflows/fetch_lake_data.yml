@@ -1,38 +1,49 @@
-import requests
-import logging
+name: Fetch and Update Lake Data
 
-# Logging setup
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+on:
+  schedule:
+    - cron: "27 * * * *"  # Runs at the 27th minute of every hour
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
-# Test URLs
-TEST_HTTP_URL = "http://httpforever.com"  # A site that does NOT use HTTPS
-USACE_URL = "https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm"  # Target URL
+jobs:
+  fetch_lake_data:
+    runs-on: ubuntu-latest
 
-# Function to test HTTP request
-def test_http():
-    try:
-        response = requests.get(TEST_HTTP_URL, timeout=10)
-        response.raise_for_status()
-        logging.info(f"✅ HTTP TEST SUCCESS - Response Length: {len(response.text)}")
-    except Exception as e:
-        logging.error(f"❌ HTTP TEST FAILED: {e}")
+    steps:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub-provided token
+          fetch-depth: 0  # Ensures full history is available
 
-# Function to test HTTPS request with SSL disabled
-def test_https():
-    try:
-        response = requests.get(USACE_URL, timeout=10, verify=False)  # Disable SSL verification
-        response.raise_for_status()
-        logging.info(f"✅ HTTPS TEST SUCCESS - Response Length: {len(response.text)}")
-    except Exception as e:
-        logging.error(f"❌ HTTPS TEST FAILED: {e}")
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-if __name__ == "__main__":
-    logging.info("🚀 Starting HTTP/HTTPS tests")
-    
-    logging.info("🌐 Testing HTTP Request...")
-    test_http()  # Test HTTP request
-    
-    logging.info("🌍 Testing HTTPS Request with SSL Disabled...")
-    test_https()  # Test HTTPS request
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4
 
-    logging.info("✅ Debugging complete.")
+      # Step 4: Pull Latest Changes to Avoid Conflicts
+      - name: Pull Latest Changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git fetch origin main
+          git reset --hard origin/main
+
+      # Step 5: Run Python Script
+      - name: Run Python Script
+        run: python .github/scripts/fetch_lake_data.py
+
+      # Step 6: Commit and Push Changes
+      - name: Commit and Push Changes
+        run: |
+          git add .
+          git commit -m "Updated lake data" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
