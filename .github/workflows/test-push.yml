@@ -27,6 +27,4 @@ jobs:
 
       - name: Push Changes
         run: |
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
