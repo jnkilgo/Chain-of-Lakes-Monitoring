@@ -24,12 +24,12 @@ jobs:
       - name: Install Dependencies
         run: pip install requests beautifulsoup4
 
-      - name: Create a New Branch
+      - name: Pull Latest Changes to Avoid Conflicts
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
           git fetch origin main
-          git checkout -b update-lake-data-$(date +%s)  # Create a unique branch name
+          git reset --hard origin/main  # Forcefully synchronize with the remote
 
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
@@ -38,15 +38,6 @@ jobs:
         run: |
           git add .
           git commit -m "Updated lake data" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git HEAD
+          git push --force https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          branch: main  # Target branch for the PR
-          title: "Update Lake Data"
-          body: "Automated update of lake data."
-          labels: automated
