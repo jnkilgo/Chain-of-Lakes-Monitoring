@@ -1,7 +1,7 @@
-name: Test Push
+name: Test Push with GITHUB_TOKEN
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   test_push:
@@ -11,15 +11,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
-          fetch-depth: 0
+          persist-credentials: false  # Use GITHUB_TOKEN for authentication
+          fetch-depth: 0  # Ensures full history is available
 
-      - name: Commit and Push
+      - name: Set up Git Identity
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
-          git add .
-          git commit -m "Test commit" --allow-empty
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
+
+      - name: Create a Test Commit
+        run: |
+          echo "Test commit" >> test.txt
+          git add test.txt
+          git commit -m "Test commit using GITHUB_TOKEN" || echo "No changes to commit"
+
+      - name: Push Changes
+        run: |
+          git push origin main
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
