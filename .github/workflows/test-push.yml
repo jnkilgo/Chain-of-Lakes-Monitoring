@@ -1,31 +1,27 @@
-name: Test Push with GITHUB_TOKEN
+name: Run SSL Debug Script
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_dispatch:  # Allows manual triggering from the Actions tab
 
 jobs:
-  test_push:
+  ssl_debug:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      # Step 2: Set up Python Environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          persist-credentials: false  # Use GITHUB_TOKEN for authentication
-          fetch-depth: 0  # Ensures full history is available
+          python-version: "3.11"
 
-      - name: Set up Git Identity
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions Bot"
+      # Step 3: Install Dependencies
+      - name: Install Required Python Libraries
+        run: pip install requests
 
-      - name: Create a Test Commit
-        run: |
-          echo "Test commit" >> test.txt
-          git add test.txt
-          git commit -m "Test commit using GITHUB_TOKEN" || echo "No changes to commit"
-
-      - name: Push Changes
-        run: |
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git
-          git push origin main
+      # Step 4: Run the SSL Debug Script
+      - name: Run SSL Debug Script
+        run: python .github/scripts/fetch_lake_data_debug.py
