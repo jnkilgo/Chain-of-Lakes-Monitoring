@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # Using personal access token instead
-          fetch-depth: 0  # Fetch full history to avoid issues
+          persist-credentials: false  # We will provide our own authentication token
+          fetch-depth: 0  # Ensures full history is available
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -24,12 +24,14 @@ jobs:
       - name: Install Dependencies
         run: pip install requests beautifulsoup4
 
-      - name: Force Sync Repository with Remote
+      - name: Pull Latest Changes to Avoid Conflicts
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git fetch origin main
-          git reset --hard origin/main  # Resets local branch to match remote exactly
+          git reset --hard origin/main  # Ensures working directory matches the latest remote version
+          git clean -fd  # Removes any untracked files to prevent merge issues
+          git pull origin main --rebase  # Ensures we are working on the latest version
 
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
