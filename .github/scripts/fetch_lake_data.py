@@ -68,18 +68,33 @@ def normalize_timestamp(raw_date, raw_time):
             raw_date = date_obj.strftime("%d%b%Y")
         return raw_date, raw_time
     except ValueError as e:
-        logging.error(f"❌ Error normalizing timestamp: {e}")
+        logging.error(f"Error normalizing timestamp: {e}")
         return None, None
+
+# Validate if a row is valid
+def is_valid_row(row, expected_columns):
+    if len(row) < expected_columns:
+        return False
+    if any(value.strip() in ["---", "----", "--", "-"] for value in row):
+        return False
+    try:
+        datetime.strptime(f"{row[0]} {row[1]}", "%d%b%Y %H%M")
+    except ValueError:
+        return False
+    return True
 
 # Fetch and parse data from the website
 def fetch_data(url, key):
+    """
+    Fetches data from the URL using spoofed headers and retries.
+    """
     attempt = 0
     while attempt < 5:
         try:
             logging.info(f"🌍 Fetching data from {url} (Attempt {attempt + 1})")
             
             # 🔹 Spoof request headers
-            response = requests.get(url, headers=HEADERS_REQUEST, timeout=15, verify=False)
+            response = requests.get(url, headers=HEADERS_REQUEST, timeout=15)
 
             response.raise_for_status()
 
@@ -87,44 +102,61 @@ def fetch_data(url, key):
             raw_text = response.text[:500]
             logging.debug(f"📝 First 500 chars of response ({key}):\n{raw_text}")
 
+            # Ensure response contains expected data
+            if "JAN" not in raw_text and "FEB" not in raw_text:
+                logging.warning(f"⚠️ Unexpected response content from {url}. Retrying...")
+                attempt += 1
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+
             soup = BeautifulSoup(response.text, "html.parser")
             pre_tag = soup.find("pre")
-            
             if not pre_tag:
-                logging.error(f"❌ No <pre> tag found in {url}. First 500 chars:\n{raw_text}")
+                logging.error(f"❌ No <pre> tag found in {url}.")
                 return []
-                
             return pre_tag.text.strip().splitlines()
 
         except requests.exceptions.RequestException as e:
-            logging.error(f"❌ Error fetching {url}: {e}. Retrying in 10 seconds...")
+            logging.error(f"❌ Error fetching {url}: {e}. Retrying...")
             attempt += 1
-            time.sleep(10)  # 🔹 Fixed 10s wait (no exponential backoff)
+            time.sleep(2 ** attempt)
 
     logging.error(f"⛔ Failed to fetch data from {url} after {attempt} attempts.")
     return []
+
+# Sort rows chronologically
+def sort_rows(data):
+    try:
+        return sorted(data, key=lambda x: datetime.strptime(f"{x[0]} {x[1]}", "%d%b%Y %H%M"))
+    except Exception as e:
+        logging.error(f"Error sorting rows: {e}")
+        return data
+
+# Remove duplicates and limit to 5 days
+def clean_and_limit_data(data, cutoff_date):
+    unique_data = {}
+    for row in data:
+        if len(row) < 2:
+            continue
+        timestamp = f"{row[0]} {row[1]}"
+        if datetime.strptime(row[0], "%d%b%Y") >= cutoff_date:
+            unique_data[timestamp] = row
+    return sort_rows(unique_data.values())
 
 # Write data to CSV
 def write_to_csv(file_path, data, headers):
     try:
         cutoff_date = datetime.now() - timedelta(days=5)
-        unique_data = {}
-        for row in data:
-            timestamp = f"{row[0]} {row[1]}"
-            if datetime.strptime(row[0], "%d%b%Y") >= cutoff_date:
-                unique_data[timestamp] = row
-
-        sorted_data = sorted(unique_data.values(), key=lambda x: datetime.strptime(f"{x[0]} {x[1]}", "%d%b%Y %H%M"))
+        cleaned_data = clean_and_limit_data(data, cutoff_date)
 
         with open(file_path, "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(headers)
-            writer.writerows(sorted_data)
+            writer.writerows(cleaned_data)
 
-        logging.info(f"✅ {len(sorted_data)} rows written to {file_path}.")
-
+        logging.info(f"{len(cleaned_data)} rows written to {file_path}.")
     except Exception as e:
-        logging.error(f"❌ Error writing to {file_path}: {e}")
+        logging.error(f"Error writing to {file_path}: {e}")
 
 # Main script function
 def main():
@@ -132,7 +164,9 @@ def main():
     for key, url in URLS.items():
         data = fetch_data(url, key)
         if data:
-            write_to_csv(CSV_FILES[key], data, HEADERS.get(key, ["Date", "Time", "Data"]))
+            file_path = CSV_FILES[key]
+            headers = HEADERS.get(key, ["Date", "Time", "Data"])
+            write_to_csv(file_path, data, headers)
         else:
             logging.warning(f"⚠️ No data fetched for {key}")
 
