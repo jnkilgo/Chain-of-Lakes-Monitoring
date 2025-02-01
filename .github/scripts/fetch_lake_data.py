@@ -4,27 +4,10 @@ from bs4 import BeautifulSoup
 import csv
 from datetime import datetime, timedelta
 import logging
-from requests.adapters import HTTPAdapter
-from urllib3.util.ssl_ import create_urllib3_context
-
-# 🔹 Force TLS 1.2 Compatibility
-class TLSAdapter(HTTPAdapter):
-    """ 
-    Custom adapter that forces TLS 1.2 for requests.
-    """
-    def init_poolmanager(self, *args, **kwargs):
-        context = create_urllib3_context()
-        context.set_ciphers("DEFAULT@SECLEVEL=1")  # Lower security level to allow older SSL/TLS
-        kwargs["ssl_context"] = context
-        super().init_poolmanager(*args, **kwargs)
-
-# 🔹 Create a session and apply the TLS adapter
-session = requests.Session()
-session.mount("https://", TLSAdapter())
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Base directory of script
-LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory (move outside script folder)
+LOG_DIR = os.path.join(BASE_DIR, "..", "logs")  # Log directory
 DATA_DIR = os.path.join(BASE_DIR, "..", "data")  # Store CSV files outside scripts directory
 
 # Ensure all required directories exist
@@ -84,15 +67,16 @@ def is_valid_row(row):
         return False
     return True
 
-# Fetch and parse data from the website using TLS 1.2
+# Fetch and parse data from the website with SSL verification disabled
 def fetch_data(url, key):
     """
-    Fetches data from the specified URL using TLS 1.2 compatibility.
+    Fetches data from the specified URL **without SSL verification**.
     """
     try:
-        logging.info(f"🌍 Fetching data from {url}...")
+        logging.info(f"🌍 Fetching data from {url} with SSL verification disabled...")
 
-        response = session.get(url, timeout=15)  # 🔹 Use TLS 1.2 session
+        # 🔹 Make request without SSL verification
+        response = requests.get(url, timeout=15, verify=False)
 
         response.raise_for_status()
 
