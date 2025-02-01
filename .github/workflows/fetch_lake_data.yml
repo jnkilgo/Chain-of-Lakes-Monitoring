@@ -2,35 +2,36 @@ name: Fetch Lake Data
 
 on:
   schedule:
-    - cron: "27 * * * *" # Runs at the 27th minute of every hour
-  workflow_dispatch: # Allows manual execution
+    - cron: "30 * * * *"  # Runs every hour at minute 30
+  workflow_dispatch:
 
 jobs:
-  fetch_lake_data:
+  fetch_data:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r .github/scripts/requirements.txt
+        run: pip install requests beautifulsoup4
 
-      - name: Run fetch_lake_data.py script
+      - name: Run data fetch script
         run: python .github/scripts/fetch_lake_data.py
 
-      - name: Commit and push changes
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+      - name: Configure Git
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push changes
+        run: |
           git add .
-          git commit -m "Updated lake data"
-          git push origin main
+          git commit -m "Updated lake data" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git main
