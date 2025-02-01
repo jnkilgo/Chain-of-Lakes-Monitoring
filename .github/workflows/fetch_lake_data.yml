@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensures we get the full commit history
+          fetch-depth: 0  # Ensure full commit history is fetched
 
       - name: Set Up Python
         uses: actions/setup-python@v4
@@ -36,11 +36,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Force Sync Local Branch with Remote
+      - name: Fetch Latest Changes from Remote
         run: |
           git fetch origin main
-          git reset --hard origin/main  # Force update local branch to match remote
-          git clean -fd  # Remove any untracked files
+          git reset --hard origin/main  # Ensure local branch matches remote
+          git pull origin main --rebase  # Merge latest changes
 
       - name: Commit and Push Changes
         env:
