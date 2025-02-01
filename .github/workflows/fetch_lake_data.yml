@@ -16,13 +16,11 @@ jobs:
           persist-credentials: false  # Use GITHUB_TOKEN for authentication
           fetch-depth: 0  # Ensures full history is available
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install Dependencies
-        run: pip install requests beautifulsoup4
+      - name: Ensure TLS 1.2+ Support
+        run: |
+          sudo apt-get update && sudo apt-get install -y libssl-dev
+          python3 -m pip install --upgrade pip
+          python3 -m pip install requests beautifulsoup4
 
       - name: Pull Latest Changes to Avoid Conflicts
         run: |
@@ -34,9 +32,21 @@ jobs:
       - name: Run Python Script
         run: python .github/scripts/fetch_lake_data.py
 
+      - name: Check for Data Changes
+        id: check_changes
+        run: |
+          git status --porcelain
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "No changes to commit"
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
       - name: Commit and Push Changes
+        if: env.changes_detected == 'true'
         run: |
           git add .
-          git commit -m "Updated lake data" || echo "No changes to commit"
+          git commit -m "Updated lake data"
           git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/jnkilgo/Chain-of-Lakes-Monitoring.git
           git push origin main
