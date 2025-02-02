@@ -7,9 +7,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Define paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go up one level to the repository root
-LOG_DIR = os.path.join(BASE_DIR, ".github", "logs")
-DATA_DIR = os.path.join(BASE_DIR, ".github", "data")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+DATA_DIR = os.path.join(BASE_DIR, "data")
 
 # Ensure directories exist
 for directory in [LOG_DIR, DATA_DIR]:
@@ -68,15 +68,12 @@ def normalize_timestamp(raw_date, raw_time):
 # Validate if a row is valid
 def is_valid_row(row):
     if len(row) < 4:
-        logging.debug(f"Row has too few columns: {row}")
         return False
     if any(value.strip() in ["---", "----", "--", "-"] for value in row):
-        logging.debug(f"Row contains invalid values: {row}")
         return False
     try:
         datetime.strptime(f"{row[0]} {row[1]}", "%d%b%Y %H%M")
     except ValueError:
-        logging.debug(f"Row has invalid date/time format: {row}")
         return False
     return True
 
@@ -86,12 +83,7 @@ def fetch_data(url):
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        pre_tag = soup.find("pre")
-        if not pre_tag:
-            logging.error(f"❌ No <pre> tag found in {url}.")
-            return []
-
-        rows = pre_tag.text.strip().splitlines()
+        rows = soup.find_all("pre")[0].text.strip().splitlines()
         parsed_data = []
         start_parsing = False
 
@@ -113,11 +105,9 @@ def fetch_data(url):
                         logging.warning(f"Skipped invalid or malformed row: {full_row}")
                         continue
                     parsed_data.append(full_row)
-                except (IndexError, ValueError) as e:
-                    logging.warning(f"Skipped malformed row: {row}. Error: {e}")
+                except (IndexError, ValueError):
+                    logging.warning(f"Skipped malformed row: {row}")
                     continue
-
-        logging.debug(f"Parsed data from {url}: {parsed_data}")
         return parsed_data
     except Exception as e:
         logging.error(f"Error fetching data from {url}: {e}")
@@ -136,17 +126,10 @@ def clean_and_limit_data(data, cutoff_date):
     unique_data = {}
     for row in data:
         if len(row) < 2:
-            logging.debug(f"Skipping row with insufficient columns: {row}")
             continue
         timestamp = f"{row[0]} {row[1]}"
-        try:
-            row_date = datetime.strptime(row[0], "%d%b%Y")
-            if row_date >= cutoff_date:
-                unique_data[timestamp] = row
-            else:
-                logging.debug(f"Skipping row older than cutoff date: {row}")
-        except ValueError as e:
-            logging.debug(f"Skipping row with invalid date format: {row}. Error: {e}")
+        if datetime.strptime(row[0], "%d%b%Y") >= cutoff_date:
+            unique_data[timestamp] = row
     return sort_rows(unique_data.values())
 
 # Write data to CSV
