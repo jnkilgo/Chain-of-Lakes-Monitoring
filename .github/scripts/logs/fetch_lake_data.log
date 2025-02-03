@@ -1116,3 +1116,30 @@
 2025-02-03 15:32:05,977 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
 2025-02-03 15:32:05,977 - WARNING - ⚠️ No data fetched for james_river_data
 2025-02-03 15:32:05,977 - INFO - ✅ Data fetch completed.
+2025-02-03 16:39:36,150 - INFO - 🚀 Starting lake data fetch script.
+2025-02-03 16:39:36,150 - INFO - 🚀 Fetching data for all sources.
+2025-02-03 16:39:36,150 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm
+2025-02-03 16:39:36,151 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:36,307 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/beaver.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:36,307 - WARNING - ⚠️ No data fetched for lake_data
+2025-02-03 16:39:36,307 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm
+2025-02-03 16:39:36,308 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:36,441 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/fayettev.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:36,441 - WARNING - ⚠️ No data fetched for white_river_data
+2025-02-03 16:39:36,441 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm
+2025-02-03 16:39:36,442 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:36,596 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/hindsvil.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:36,597 - WARNING - ⚠️ No data fetched for war_eagle_data
+2025-02-03 16:39:36,597 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm
+2025-02-03 16:39:36,598 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:36,745 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/tabrock.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:36,746 - WARNING - ⚠️ No data fetched for table_rock_data
+2025-02-03 16:39:36,746 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm
+2025-02-03 16:39:36,747 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:37,223 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/berryvil.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:37,223 - WARNING - ⚠️ No data fetched for kings_river_data
+2025-02-03 16:39:37,223 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm
+2025-02-03 16:39:37,224 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-02-03 16:39:37,360 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1006)')))
+2025-02-03 16:39:37,361 - WARNING - ⚠️ No data fetched for james_river_data
+2025-02-03 16:39:37,361 - INFO - ✅ Data fetch completed.
