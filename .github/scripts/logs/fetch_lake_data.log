@@ -3960,3 +3960,30 @@
 2025-12-11 13:52:30,898 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1016)')))
 2025-12-11 13:52:30,899 - WARNING - ⚠️ No data fetched for james_river_data
 2025-12-11 13:52:30,899 - INFO - ✅ Data fetch completed.
+2025-12-11 14:40:48,000 - INFO - 🚀 Starting lake data fetch script.
+2025-12-11 14:40:48,000 - INFO - 🚀 Fetching data for all sources.
+2025-12-11 14:40:48,000 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm
+2025-12-11 14:40:48,001 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:41:03,048 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/beaver.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/beaver.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebdcd2410>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:41:03,048 - WARNING - ⚠️ No data fetched for lake_data
+2025-12-11 14:41:03,048 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm
+2025-12-11 14:41:03,049 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:41:18,154 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/fayettev.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/fayettev.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebddb3610>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:41:18,155 - WARNING - ⚠️ No data fetched for white_river_data
+2025-12-11 14:41:18,155 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm
+2025-12-11 14:41:18,156 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:41:33,198 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/hindsvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/hindsvil.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebdb2afd0>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:41:33,198 - WARNING - ⚠️ No data fetched for war_eagle_data
+2025-12-11 14:41:33,198 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm
+2025-12-11 14:41:33,200 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:41:48,243 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/tabrock.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/tabrock.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebdcd06d0>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:41:48,244 - WARNING - ⚠️ No data fetched for table_rock_data
+2025-12-11 14:41:48,244 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm
+2025-12-11 14:41:48,245 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:42:03,290 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/berryvil.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/berryvil.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebdcd8150>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:42:03,290 - WARNING - ⚠️ No data fetched for kings_river_data
+2025-12-11 14:42:03,290 - INFO - 🌍 Fetching data from https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm
+2025-12-11 14:42:03,291 - DEBUG - Starting new HTTPS connection (1): www.swl-wc.usace.army.mil:443
+2025-12-11 14:42:18,344 - ERROR - ❌ Error fetching https://www.swl-wc.usace.army.mil/pages/data/tabular/htm/galena.htm: HTTPSConnectionPool(host='www.swl-wc.usace.army.mil', port=443): Max retries exceeded with url: /pages/data/tabular/htm/galena.htm (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.swl-wc.usace.army.mil', port=443) at 0x7faebdcd9c90>, 'Connection to www.swl-wc.usace.army.mil timed out. (connect timeout=15)'))
+2025-12-11 14:42:18,344 - WARNING - ⚠️ No data fetched for james_river_data
+2025-12-11 14:42:18,344 - INFO - ✅ Data fetch completed.
